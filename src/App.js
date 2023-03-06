@@ -1,13 +1,17 @@
-import React from "react";
 import Die from "./Die";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
+import { useState } from "react";
 
-export default function App() {
-  const [dice, setDice] = React.useState(allNewDice());
-  const [tenzies, setTenzies] = React.useState(false);
 
-  React.useEffect(() => {
+ 
+
+
+const App = () => {
+  const [dice, setDice] = useState(allNewDice());
+  const [tenzies, setTenzies] = useState(false);
+
+  useEffect(() => {
     const allHeld = dice.every((die) => die.isHeld);
     const firstValue = dice[0].value;
     const allSameValue = dice.every((die) => die.value === firstValue);
@@ -16,23 +20,24 @@ export default function App() {
     }
   }, [dice]);
 
-  function generateNewDie() {
+  const  generateNewDie = (() => {
     return {
       value: Math.ceil(Math.random() * 6),
       isHeld: false,
       id: nanoid(),
     };
   }
-
-  function allNewDice() {
+  )
+  const  allNewDice = (() => {
     const newDice = [];
     for (let i = 0; i < 10; i++) {
       newDice.push(generateNewDie());
     }
     return newDice;
   }
+  )
 
-  function rollDice() {
+  const rollDice = (() =>{
     if (!tenzies) {
       setDice((oldDice) =>
         oldDice.map((die) => {
@@ -44,14 +49,15 @@ export default function App() {
       setDice(allNewDice());
     }
   }
+  )
 
-  function holdDice(id) {
+  const holdDice = ((id) => {
     setDice((oldDice) =>
       oldDice.map((die) => {
         return die.id === id ? { ...die, isHeld: !die.isHeld } : die;
       })
     );
-  }
+  })
 
   const diceElements = dice.map((die) => (
     <Die
@@ -84,3 +90,5 @@ export default function App() {
     </main>
   );
 }
+
+export default App;
